@@ -77,6 +77,7 @@ def processline(line,date):
             
 def outputfile():
     outfile=open("generatetable.csv",'w')
+    outfile.write('word,count,date,Longitude,Latitude\n')
     for key in table.keys():
         outfile.write(table[key].output())
     outfile.close()
