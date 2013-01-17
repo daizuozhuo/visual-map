@@ -6,29 +6,83 @@
   html { height: 100% }
   body { height: 100%; margin: 0px; padding: 0px }
   #map_canvas { height: 100% }
+  #map_date {
+    color: rgb(255, 255, 255);
+    background-image: -webkit-linear-gradient(
+        top,rgb(94,148,255) 0%, rgb(85,140,251) 100%);
+    z-index: 100;
+    position: absolute;
+    top: 20px;
+    left: 80px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .61);
+    border-radius: 5px;
+    padding: 0 20px;
+  }
+     
+
 </style>
+
 <script type="text/javascript"
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAc2vcBAzGDXr9xomHg4jD6g7XT0_1uRQg&sensor=false">
 </script>
+
 <script type="text/javascript">
-    function initialize() {
-        var beijing = new google.maps.LatLng(39.93,116.4);
-        var map = new google.maps.Map(document.getElementById("map_canvas"), {
-            center: beijing,
-            zoom: 3,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
-        var layer = new google.maps.FusionTablesLayer({
-            query: {
-                select:'Longitude',
-                from: '17rjTQDK2VVO92FYqL9k6jrNT6Cg4uFxkoEg35IY'
-            }
-        });
-        layer.setMap(map);
+var datetimer;
+var isstart;
+var layer;
+var cdate;
+var map;
+function initialize() {
+    cdate = new Date(2004,6,1);
+    var beijing = new google.maps.LatLng(39.93,116.4);
+    map = new google.maps.Map(
+            document.getElementById("map_canvas"), {
+        center: beijing,
+        zoom: 3,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+    update_layer();
+    time_start();
+}
+
+function update_layer() {
+    var sdate = date_to_number(cdate);
+    layer = new google.maps.FusionTablesLayer({
+        query: {
+            select:'Longitude',
+            from: '17rjTQDK2VVO92FYqL9k6jrNT6Cg4uFxkoEg35IY',
+            where: 'date='+ sdate
+        }
+    });
+    layer.setMap(map);
+}
+
+function date_to_number(mydate) {
+    mydate = new Date(mydate);
+    var year = mydate.getFullYear();
+    var month = mydate.getMonth()+1;
+    var day = mydate.getDate();
+    return year*10000 + month*100 + day;
+}
+
+function time_start() {
+    isstart = true;
+    datetimer = setTimeout("update_date()",1000);
+}
+
+function update_date() {
+    cdate.setDate(cdate.getDate() + 1);
+    document.getElementById("map_date").innerHTML=cdate.toDateString();
+    update_layer();
+    if (isstart) {
+        datetimer = setTimeout("update_date()", 1000);
     }
+}
+
 </script>
 </head>
 <body onload="initialize()">
-    <div id="map_canvas"></div>
+    <div id="map_date"></div>
+    <div id="map_canvas"> </div>
 </body>
 </html>
