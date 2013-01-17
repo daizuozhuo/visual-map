@@ -2,10 +2,14 @@
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+  <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css" />
 <style type="text/css">
   html { height: 100% }
-  body { height: 100%; margin: 0px; padding: 0px }
-  #map_canvas { height: 100% }
+  body { height: 70%; margin: 50px; padding: 50px }
+  #map_canvas { height: 90% }
   #map_date {
     color: rgb(255, 255, 255);
     background-image: -webkit-linear-gradient(
@@ -23,7 +27,7 @@
 </style>
 
 <script type="text/javascript"
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAc2vcBAzGDXr9xomHg4jD6g7XT0_1uRQg&sensor=false">
+  src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAc2vcBAzGDXr9xomHg4jD6g7XT0_1uRQg&sensor=false">
 </script>
 
 <script type="text/javascript">
@@ -32,27 +36,124 @@ var isstart;
 var layer;
 var cdate;
 var map;
+var min_date;
+var max_date;
+var low_bound;
+var high_bound;
 function initialize() {
     cdate = new Date(2004,6,1);
-    var beijing = new google.maps.LatLng(39.93,116.4);
+	min_date = -1;
+	max_date= 99999999;
+    repaint();
+    //update_layer();
+    //time_start();
+
+}
+
+function repaint()
+{
+	var beijing = new google.maps.LatLng(39.93,116.4);
     map = new google.maps.Map(
             document.getElementById("map_canvas"), {
         center: beijing,
         zoom: 3,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-    update_layer();
-    time_start();
+
+	analysis();
+	layer();
+}
+
+var places;
+function httpGet(theUrl)
+    {
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+    }
+
+function analysis()
+{
+var file = httpGet('http://ihome.ust.hk/~lliaa/generatetable.txt');
+var line = file.split('\r\n');
+places = [];
+if (min_date == -1)
+{
+	min_date = (line[1].split(','))[2];
+	max_date = (line[line.length - 2].split(','))[2];
+}
+for (var i = 1; i < line.length; i++)
+{
+	if (line[i] == null || line[i] == '')
+	{
+		continue;
+	}
+	var found = false;
+	var temp = line[i].split(',');
+	var temp_date = parseInt(temp[2]);
+	if (temp_date < low_bound)
+	{
+		continue;
+	}
+	if (temp_date > high_bound)
+	{
+		break;
+	}
+	for (var j = 0; j < places.length; j++)
+	{
+		if(temp[0] == places[j].name)
+		{
+			places[j].count += parseInt(temp[1]);
+			found = true;
+			break;
+		}
+	}
+	if (!found)
+	{
+		var p = {name:temp[0],count:parseInt(temp[1]),lng:temp[3],lat:temp[4]};
+		places.push(p);
+	}
+
+}
+}
+
+function layer()
+{
+var cityCircle;
+for (var i = 0; i < places.length; i++)
+{
+    var populationOptions = {
+      strokeColor: "#FF0000",
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: "#FF0000",
+      fillOpacity: 0.35,
+      map: map,
+      center: new google.maps.LatLng(places[i].lat, places[i].lng),
+      radius: places[i].count * 1000
+    };
+    cityCircle = new google.maps.Circle(populationOptions);
+}
 }
 
 function update_layer() {
     var sdate = date_to_number(cdate);
+    //if (layer != null)	
+    	//layer.setMap();
     layer = new google.maps.FusionTablesLayer({
         query: {
             select:'Longitude',
             from: '17rjTQDK2VVO92FYqL9k6jrNT6Cg4uFxkoEg35IY',
-            where: 'date='+ sdate
-        }
+            where: 'date<=20040714 and date>=20040701'
+        },
+ styles: [{
+   markerOptions: {
+    iconName: "large_green"
+  }
+  }]
     });
     layer.setMap(map);
 }
@@ -67,7 +168,7 @@ function date_to_number(mydate) {
 
 function time_start() {
     isstart = true;
-    datetimer = setTimeout("update_date()",1000);
+    //datetimer = setTimeout("update_date()",1000);
 }
 
 function update_date() {
@@ -79,10 +180,38 @@ function update_date() {
     }
 }
 
-</script>
+function calDate(date)
+{
+	return parseInt(min_date) + parseInt((max_date - min_date) * date / 1000);	
+}
+
+  $(function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 1000,
+      values: [ 75, 300 ],
+      slide: function( event, ui ) {
+        $( "#amount" ).val(calDate(ui.values[0]) + " - " + calDate(ui.values[1]) );
+		low_bound = calDate(ui.values[0]);
+		high_bound = calDate(ui.values[1]);
+		repaint();
+      }
+    });
+    $( "#amount" ).val( calDate($( "#slider-range" ).slider( "values", 0 )) +
+      " - " + calDate($( "#slider-range" ).slider( "values", 1 )) );
+		repaint();
+  });
+  </script>
 </head>
 <body onload="initialize()">
     <div id="map_date"></div>
     <div id="map_canvas"> </div>
+<p>
+  <label for="amount">Date range:</label>
+  <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;" />
+</p>
+ 
+<div id="slider-range"></div>
 </body>
 </html>
