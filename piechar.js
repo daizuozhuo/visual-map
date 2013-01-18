@@ -4,7 +4,9 @@ google.load('visualization', '1.0', {'packages':['corechart']});
 // Set a callback to run when the Google Visualization API is loaded.
 //google.setOnLoadCallback(drawChart);
 
-// Callback that creates and populates a data table,
+function drawLineChart(begin, end) {
+    
+
 // instantiates the pie chart, passes in the data and
 // draws it.
 function drawChart(begin, end) {
@@ -25,15 +27,6 @@ function drawChart(begin, end) {
         data.addColumn('string', 'Topping');
         data.addColumn('number', 'Slices');
         var numRows = response.getDataTable().getNumberOfRows();
-        /*var numCols = response.getDataTable().getNumberOfColumns();
-        data.addRows([
-            ['Mushrooms', 3],
-            ['Onions', 1],
-            ['Olives', 1],
-            ['Zucchini', 1],
-            ['Pepperoni', 2]
-        ]);
-*/
         for (var i = 0; i < numRows; i++) {
             data.addRow([
                 response.getDataTable().getValue(i,0),
