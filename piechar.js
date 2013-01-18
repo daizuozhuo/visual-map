@@ -29,7 +29,7 @@ function drawChart(begin, end) {
                 response.getDataTable().getValue(i,0),
                 response.getDataTable().getValue(i,1)
             ]);
-            words[i]=response.getDataTable.getValue(i,0);
+         //   words[i]=response.getDataTable().getValue(i,0);
         }
         var options = {'title' : 'top 10 places',
             'width' : 400,
@@ -57,7 +57,7 @@ function drawLineChart(begin, end, words, numRows) {
         'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
     // Send query and draw chart with data in response
     gvizQuery.send(function(response) {
-    }
+    });
     }    
     
    
