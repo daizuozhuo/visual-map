@@ -4,8 +4,6 @@ google.load('visualization', '1.0', {'packages':['corechart']});
 // Set a callback to run when the Google Visualization API is loaded.
 //google.setOnLoadCallback(drawChart);
 
-function drawLineChart(begin, end) {
-    
 
 // instantiates the pie chart, passes in the data and
 // draws it.
@@ -19,10 +17,9 @@ function drawChart(begin, end) {
     var queryText = encodeURIComponent(query);
     var gvizQuery = new google.visualization.Query(
         'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
-
     // Send query and draw chart with data in response
     gvizQuery.send(function(response) {
-        console.log(response.getDataTable());
+        var words;
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Topping');
         data.addColumn('number', 'Slices');
@@ -32,6 +29,7 @@ function drawChart(begin, end) {
                 response.getDataTable().getValue(i,0),
                 response.getDataTable().getValue(i,1)
             ]);
+            words[i]=response.getDataTable.getValue(i,0);
         }
         var options = {'title' : 'top 10 places',
             'width' : 400,
@@ -42,9 +40,27 @@ function drawChart(begin, end) {
         var char = new google.visualization.PieChart(
             document.getElementById('piechart'));
         char.draw(data, options);
+        drawLineChart(begin,end,words,numRows);
     });
 }
    
-
+function drawLineChart(begin, end, words, numRows) {
+    var data = new google.visualization.DataTable();
+    data.addColumn('number', 'x');
+    for(var i = 0; i < numRows; i++) {
+    var query= "SELECT count " +
+        "FROM 17rjTQDK2VVO92FYqL9k6jrNT6Cg4uFxkoEg35IY " +
+        "WHERE word='"+words[i]+
+        "' AND date>='" + begin + "' AND date<='" + end + "'";
+    var queryText = encodeURIComponent(query);
+    var gvizQuery = new google.visualization.Query(
+        'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
+    // Send query and draw chart with data in response
+    gvizQuery.send(function(response) {
+    }
+    }    
+    
+   
+} 
    
 
