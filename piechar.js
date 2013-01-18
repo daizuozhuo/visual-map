@@ -7,6 +7,9 @@ google.load('visualization', '1.0', {'packages':['corechart']});
 
 // instantiates the pie chart, passes in the data and
 // draws it.
+var char;
+var words;
+var data;
 function drawChart(begin, end) {
     var query= "SELECT word, SUM(count) " +
         "FROM 17rjTQDK2VVO92FYqL9k6jrNT6Cg4uFxkoEg35IY " +
@@ -19,8 +22,7 @@ function drawChart(begin, end) {
         'http://www.google.com/fusiontables/gvizdata?tq=' + queryText);
     // Send query and draw chart with data in response
     gvizQuery.send(function(response) {
-        var words;
-        var data = new google.visualization.DataTable();
+        data = new google.visualization.DataTable();
         data.addColumn('string', 'Topping');
         data.addColumn('number', 'Slices');
         var numRows = response.getDataTable().getNumberOfRows();
@@ -35,15 +37,39 @@ function drawChart(begin, end) {
             'width' : 400,
             'height' : 300,
             'is3D' : true,
+		'enableEvents' : true,
             backgroundColor: {fill:'transparent'}
         };
-        var char = new google.visualization.PieChart(
+        char = new google.visualization.PieChart(
             document.getElementById('piechart'));
         char.draw(data, options);
+
+google.visualization.events.addListener(char, 'onmouseover', onOver);
+google.visualization.events.addListener(char, 'onmouseout', onOut);
         drawLineChart(begin,end,words,numRows);
+
     });
+
 }
-   
+
+
+
+   function onOver(event)  
+{
+var circle = circles[data.za[event.row][0].ph];
+circle.fillOpacity = 0.7;
+circle.setMap();
+circle.setMap(map);
+}   
+
+   function onOut(event)  
+{
+var circle = circles[data.za[event.row][0].ph];
+circle.fillOpacity = 0.35;
+circle.setMap();
+circle.setMap(map);
+}   
+
 function drawLineChart(begin, end, words, numRows) {
     var data = new google.visualization.DataTable();
     data.addColumn('number', 'x');
