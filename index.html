@@ -2,34 +2,17 @@
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
-  <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-  <link rel="stylesheet" href="/resources/demos/style.css" />
-<style type="text/css">
-  html { height: 100% }
-  body { height: 70%; margin: 50px; padding: 50px }
-  #map_canvas { height: 90% }
-  #map_date {
-    color: rgb(255, 255, 255);
-    background-image: -webkit-linear-gradient(
-        top,rgb(94,148,255) 0%, rgb(85,140,251) 100%);
-    z-index: 100;
-    position: absolute;
-    top: 20px;
-    left: 80px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .61);
-    border-radius: 5px;
-    padding: 0 20px;
-  }
-     
+<link rel="stylesheet" href="style.css" />
 
-</style>
-
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 <script type="text/javascript"
-  src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAc2vcBAzGDXr9xomHg4jD6g7XT0_1uRQg&sensor=false">
+    src="http://maps.googleapis.com/maps/api/js?sensor=false">
 </script>
-
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="piechar.js"></script>
 <script type="text/javascript">
 var datetimer;
 var isstart;
@@ -42,8 +25,8 @@ var low_bound;
 var high_bound;
 function initialize() {
     cdate = new Date(2004,6,1);
-	min_date = -1;
-	max_date= 99999999;
+    min_date = -1;
+    max_date= 99999999;
     repaint();
     //update_layer();
     //time_start();
@@ -52,41 +35,56 @@ function initialize() {
 
 function repaint()
 {
-	var beijing = new google.maps.LatLng(39.93,116.4);
+    var beijing = new google.maps.LatLng(39.93,116.4);
     map = new google.maps.Map(
-            document.getElementById("map_canvas"), {
+    document.getElementById("map_canvas"), {
         center: beijing,
-        zoom: 3,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        zoom: 2,
+        mapTypeControl: false,
+        zoomControl: true,
+        panControl: true,
+        scrollwheel: false,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [
+            {stylers: [{visibility: "on"}]},
+            {featureType: "water",stylers: [
+                {visibility: "on"},
+                {color: "#d4d4d4"}]
+            },
+            {featureType: "landscape",stylers: [
+                {visibility: "on"},
+                {color: "#e5e3df"}]
+            }
+        ]
     });
-
-	analysis();
-	layer();
+    drawChart(20050523, 20060616);
+    analysis();
+    layer();
 }
 
 var places;
 function httpGet(theUrl)
-    {
+{
     var xmlHttp = null;
 
     xmlHttp = new XMLHttpRequest();
     xmlHttp.open( "GET", theUrl, false );
     xmlHttp.send( null );
     return xmlHttp.responseText;
-    }
+}
 
 function analysis()
 {
-var file = httpGet('http://ihome.ust.hk/~lliaa/generatetable.txt');
-var line = file.split('\r\n');
-places = [];
-if (min_date == -1)
-{
+    var file = httpGet('http://ihome.ust.hk/~lliaa/generatetable.txt');
+    var line = file.split('\r\n');
+    places = [];
+    if (min_date == -1)
+    {
 	min_date = (line[1].split(','))[2];
 	max_date = (line[line.length - 2].split(','))[2];
-}
-for (var i = 1; i < line.length; i++)
-{
+    }
+    for (var i = 1; i < line.length; i++)
+    {
 	if (line[i] == null || line[i] == '')
 	{
 		continue;
@@ -122,21 +120,21 @@ for (var i = 1; i < line.length; i++)
 
 function layer()
 {
-var cityCircle;
-for (var i = 0; i < places.length; i++)
-{
-    var populationOptions = {
-      strokeColor: "#FF0000",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: "#FF0000",
-      fillOpacity: 0.35,
-      map: map,
-      center: new google.maps.LatLng(places[i].lat, places[i].lng),
-      radius: places[i].count * 1000
-    };
-    cityCircle = new google.maps.Circle(populationOptions);
-}
+    var cityCircle;
+    for (var i = 0; i < places.length; i++)
+    {
+        var populationOptions = {
+          strokeColor: "#FF0000",
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: "#FF0000",
+          fillOpacity: 0.35,
+          map: map,
+          center: new google.maps.LatLng(places[i].lat, places[i].lng),
+          radius: places[i].count * 1000
+        };
+        cityCircle = new google.maps.Circle(populationOptions);
+    }
 }
 
 function update_layer() {
@@ -187,6 +185,7 @@ function calDate(date)
 
   $(function() {
     $( "#slider-range" ).slider({
+      orientation: "horizontal",
       range: true,
       min: 0,
       max: 1000,
@@ -205,13 +204,12 @@ function calDate(date)
   </script>
 </head>
 <body onload="initialize()">
-    <div id="map_date"></div>
     <div id="map_canvas"> </div>
-<p>
-  <label for="amount">Date range:</label>
-  <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;" />
-</p>
- 
-<div id="slider-range"></div>
+    <div id="piechart"></div>
+    <p id="chooser">
+      <label for="amount">Date range:</label>
+      <input type="text" id="amount"/>
+    </p>
+    <div id="slider-range"></div>
 </body>
 </html>

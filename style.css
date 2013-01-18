@@ -1,0 +1,44 @@
+html { height: 100% }
+body { height: 100%; margin: 0px; padding: 0px }
+#map_canvas { 
+    height: 100%;
+    width: 100%;
+}
+#piechart {
+    border :0;
+    position: absolute;
+    top: 0%;
+    left: 75%;
+    width: 20%;
+    height: 300 px;
+}
+
+#map_date,#chooser {
+    background: rgb(238, 238, 238);
+    z-index: 100;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .61);
+    border-radius: 5px;
+    padding: 2px 10px;
+}
+
+#map_date {
+    position: absolute;
+    top: 20px;
+    left: 80px;
+}
+
+#slider-range {
+    position: absolute;
+    bottom: 40px;
+    left: 350px;
+    width: 70%;
+}
+#amount {
+    border:0;
+    background: rgb(238,238,238);
+}
+#chooser {
+    position: absolute;
+    bottom: 22px;
+    left: 50px;
+}
