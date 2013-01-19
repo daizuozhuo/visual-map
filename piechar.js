@@ -36,15 +36,39 @@ function drawChart(begin, end) {
             'width' : 400,
             'height' : 300,
             'is3D' : true,
+		'enableEvents' : true,
             backgroundColor: {fill:'transparent'}
         };
-        var char = new google.visualization.PieChart(
+        char = new google.visualization.PieChart(
             document.getElementById('piechart'));
         char.draw(data, options);
+
+google.visualization.events.addListener(char, 'onmouseover', onOver);
+google.visualization.events.addListener(char, 'onmouseout', onOut);
         drawLineChart(begin,end,words,numRows);
+
     });
+
 }
-   
+
+
+
+   function onOver(event)  
+{
+var circle = circles[data.za[event.row][0].ph];
+circle.fillOpacity = 0.7;
+circle.setMap();
+circle.setMap(map);
+}   
+
+   function onOut(event)  
+{
+var circle = circles[data.za[event.row][0].ph];
+circle.fillOpacity = 0.35;
+circle.setMap();
+circle.setMap(map);
+}   
+
 function drawLineChart(begin, end, words, numwords) {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'x');

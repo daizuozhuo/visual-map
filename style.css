@@ -47,10 +47,12 @@ body {
 }
 #amount {
     border:0;
+    width:210px;
     background: rgb(238,238,238);
 }
 #chooser {
     position: absolute;
     bottom: 132px;
-    left: 50px;
+    left: 50px;    
+    width:210px;
 }
