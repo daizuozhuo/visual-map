@@ -47,7 +47,7 @@ function repaint()
             }
         ]
     });
-    drawChart(20050523, 20060616);
+    drawChart(date_to_number(low_bound), date_to_number(high_bound));
     analysis();
     layer();
 }
