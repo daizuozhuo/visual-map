@@ -1,7 +1,12 @@
 html { height: 100% }
-body { height: 100%; margin: 0px; padding: 0px }
+body { 
+    height: 100%; margin: 0px; padding: 0px;
+    background: #f5f6f8;
+}
+
 #map_canvas { 
-    height: 100%;
+    top: 0%;
+    height: 80%;
     width: 100%;
 }
 #piechart {
@@ -11,6 +16,13 @@ body { height: 100%; margin: 0px; padding: 0px }
     left: 70%;
     width: 20%;
     height: 300 px;
+}
+#linechart {
+    border:0;
+    position:absolute;
+    bottom:0 px;
+    height: 150 px;
+    width: 100%;
 }
 
 #map_date,#chooser {
@@ -29,7 +41,7 @@ body { height: 100%; margin: 0px; padding: 0px }
 
 #slider-range {
     position: absolute;
-    bottom: 40px;
+    bottom: 150px;
     left: 350px;
     width: 70%;
 }
@@ -39,6 +51,6 @@ body { height: 100%; margin: 0px; padding: 0px }
 }
 #chooser {
     position: absolute;
-    bottom: 22px;
+    bottom: 132px;
     left: 50px;
 }
