@@ -56,6 +56,7 @@ google.visualization.events.addListener(char, 'onmouseout', onOut);
    function onOver(event)  
 {
 var circle = circles[data.za[event.row][0].ph];
+circle.fillColor = '#fbf1b1';
 circle.fillOpacity = 0.7;
 circle.setMap();
 circle.setMap(map);
@@ -64,6 +65,7 @@ circle.setMap(map);
    function onOut(event)  
 {
 var circle = circles[data.za[event.row][0].ph];
+circle.fillColor = rgb(places[i].rate);
 circle.fillOpacity = 0.35;
 circle.setMap();
 circle.setMap(map);
@@ -133,7 +135,6 @@ function drawLineChart(begin, end, words, numwords) {
                 data.setCell(m, iword+1, carray[m]);
             }
             if(nresponse == numwords) {
-                console.log(data.toJSON());
                 var linechart =new google.visualization.LineChart(
                 document.getElementById('linechart'));
                 linechart.draw(data, {
