@@ -47,9 +47,9 @@ function repaint()
             }
         ]
     });
-    drawChart(date_to_number(low_bound), date_to_number(high_bound));
     analysis();
     layer();
+    drawChart(date_to_number(low_bound), date_to_number(high_bound));
 }
 
 var places;
@@ -131,7 +131,7 @@ function layer()
           strokeOpacity: 0.0,
           strokeWeight: 2,
           fillColor: rgb(places[i].rate),
-          fillOpacity: 0.35,
+          fillOpacity: 0.5,
           map: map,
           center: new google.maps.LatLng(places[i].lat, places[i].lng),
           radius: places[i].count * 10000000 / total
