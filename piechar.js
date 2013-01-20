@@ -134,10 +134,7 @@ function drawLineChart(begin, end, words, numwords) {
                 data.setCell(m, iword+1, carray[m]);
             }
             if(nresponse == numwords) {
-<<<<<<< HEAD
                // console.log(data.toJSON());
-=======
->>>>>>> trunk/master
                 var linechart =new google.visualization.LineChart(
                 document.getElementById('linechart'));
                 linechart.draw(data, {
