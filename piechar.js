@@ -8,6 +8,7 @@ var nresponse = 0;
 
 // instantiates the pie chart, passes in the data and
 // draws it.
+var data;
 function drawChart(begin, end) {
     var query= "SELECT word, SUM(count) " +
         "FROM " + TABLEID +
@@ -21,7 +22,7 @@ function drawChart(begin, end) {
     // Send query and draw chart with data in response
     gvizQuery.send(function(response) {
         var words = new Array();
-        var data = new google.visualization.DataTable();
+        data = new google.visualization.DataTable();
         data.addColumn('string', 'Topping');
         data.addColumn('number', 'Slices');
         var numRows = response.getDataTable().getNumberOfRows();
@@ -64,7 +65,7 @@ circle.setMap(map);
    function onOut(event)  
 {
 var circle = circles[data.za[event.row][0].ph];
-circle.fillOpacity = 0.35;
+circle.fillOpacity = 0.5;
 circle.setMap();
 circle.setMap(map);
 }   
@@ -133,13 +134,14 @@ function drawLineChart(begin, end, words, numwords) {
                 data.setCell(m, iword+1, carray[m]);
             }
             if(nresponse == numwords) {
+               // console.log(data.toJSON());
                 var linechart =new google.visualization.LineChart(
                 document.getElementById('linechart'));
                 linechart.draw(data, {
                     curveType: "function",
                     'is3D' : true,
                     backgroundColor: {fill:'transparent'},
-                    width: 1280, height: 150,
+                    width: 1000, height: 150,
                     vAxis:{minValue:1, logScale: true}
                 });
             }

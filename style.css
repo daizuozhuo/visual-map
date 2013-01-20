@@ -1,6 +1,6 @@
 html { height: 100% }
 body { 
-    height: 100%; margin: 0px; padding: 0px;
+    height: 100%; margin: 50px; padding: 0px;
     background: #f5f6f8;
 }
 
@@ -12,7 +12,7 @@ body {
 #piechart {
     border :0;
     position: absolute;
-    top: 0%;
+    top: 80%;
     left: 70%;
     width: 20%;
     height: 300 px;

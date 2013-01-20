@@ -25,6 +25,8 @@ function initialize() {
     info = [];
 }
 
+
+
 function repaint()
 {
     var beijing = new google.maps.LatLng(39.93,116.4);
@@ -49,9 +51,9 @@ function repaint()
             }
         ]
     });
-    drawChart(date_to_number(low_bound), date_to_number(high_bound));
     analysis();
     layer();
+    drawChart(date_to_number(low_bound), date_to_number(high_bound));
 }
 
 var places;
@@ -133,38 +135,54 @@ function layer()
           strokeOpacity: 0.0,
           strokeWeight: 2,
           fillColor: rgb(places[i].rate),
-          fillOpacity: 0.35,
+          fillOpacity: 0.5,
           map: map,
           center: new google.maps.LatLng(places[i].lat, places[i].lng),
           radius: Math.log(places[i].count) / total * 1000000000
         };
         cityCircle = new google.maps.Circle(populationOptions);
+	  cityCircle.placeName = places[i].name;	
 	  circles[places[i].name] = cityCircle;
-        google.maps.event.addListener(cityCircle,'mouseover',
-            function(ev) {
-                var place = places[get_place_id(ev.latLng,2)];
-                var circle = circles[place.name];
-                circle.fillOpacity = 0.7;
-                circle.setMap();
-                circle.setMap(map);
-               /* info[place.name] = new google.maps.InfoWindow({
-                    content: place.name+" count:"+place.count,
-                    position: ev.latLng,
+info[places[i].name] = new google.maps.InfoWindow({
+                    content: places[i].name+" count:"+places[i].count,
+                    position: new google.maps.LatLng(places[i].lat, places[i].lng),
                     maxWidth: 10
 
                 });
-                info[place.name].open(map,circle);
-                */
+
+		with ({ circle: cityCircle})
+	 {
+        google.maps.event.addListener(cityCircle,'mouseover',
+            function(ev) {
+                // var place = places[get_place_id(ev.latLng,2)];
+                // var circle = circles[place.name];
+		//console.log(circle);
+                if (circle.fillOpacity != 0.7)
+			{
+                circle.fillOpacity = 0.7;
+                circle.setMap();
+                circle.setMap(map);
+			}
+               for(name in info)
+			{
+				info[name].close();
+			}
+                info[circle.placeName].open(map);
+                
             });
         google.maps.event.addListener(cityCircle,'mouseout',
             function(ev) {
-                var place = places[get_place_id(ev.latLng,3)];
-                var circle = circles[place.name];
+                //var place = places[get_place_id(ev.latLng,3)];
+                //var circle = circles[place.name];
+                if (circle.fillOpacity != 0.35)
+			{
                 circle.fillOpacity = 0.35;
                 circle.setMap();
                 circle.setMap(map);
-               // info[place.name].close();
+			}
+               info[circle.placeName].close();
             });
+	}
     }
 }
 
