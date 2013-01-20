@@ -134,11 +134,10 @@ function layer()
           fillOpacity: 0.35,
           map: map,
           center: new google.maps.LatLng(places[i].lat, places[i].lng),
-          radius: places[i].count * 5000000 / total
+          radius: Math.log(places[i].count) * 1000000000 / total
         };
         cityCircle = new google.maps.Circle(populationOptions);
 	  circles[places[i].name] = cityCircle;
-    }
 }
 
 function rgb(rate)
