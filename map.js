@@ -10,6 +10,7 @@ var high_bound;
 var middle_point;
 var changed;
 var circles;
+var info;
 
 function initialize() {
     cdate = new Date(2004,6,1);
@@ -21,6 +22,7 @@ function initialize() {
     analysis();
     changed = true;
     circles = [];
+    info = [];
 }
 
 function repaint()
@@ -134,10 +136,47 @@ function layer()
           fillOpacity: 0.35,
           map: map,
           center: new google.maps.LatLng(places[i].lat, places[i].lng),
-          radius: Math.log(places[i].count) * 1000000000 / total
+          radius: Math.log(places[i].count) / total * 1000000000
         };
         cityCircle = new google.maps.Circle(populationOptions);
 	  circles[places[i].name] = cityCircle;
+        google.maps.event.addListener(cityCircle,'mouseover',
+            function(ev) {
+                var place = places[get_place_id(ev.latLng,2)];
+                var circle = circles[place.name];
+                circle.fillOpacity = 0.7;
+                circle.setMap();
+                circle.setMap(map);
+               /* info[place.name] = new google.maps.InfoWindow({
+                    content: place.name+" count:"+place.count,
+                    position: ev.latLng,
+                    maxWidth: 10
+
+                });
+                info[place.name].open(map,circle);
+                */
+            });
+        google.maps.event.addListener(cityCircle,'mouseout',
+            function(ev) {
+                var place = places[get_place_id(ev.latLng,3)];
+                var circle = circles[place.name];
+                circle.fillOpacity = 0.35;
+                circle.setMap();
+                circle.setMap(map);
+               // info[place.name].close();
+            });
+    }
+}
+
+function get_place_id(latLng, threshold) {
+    var lat = latLng.lat();
+    var lng = latLng.lng();
+    for(var i = 0; i < places.length; i++) {
+        if(Math.abs(places[i].lat - lat) < threshold
+            && Math.abs(places[i].lng - lng) < threshold) {
+            return i;
+        }
+    }
 }
 
 function rgb(rate)
